@@ -1,4 +1,4 @@
-version 1.0
+version 1.2
 
 # Set runtime attributes across environments depending on the backend in use
 
@@ -43,22 +43,22 @@ workflow backend_configuration {
     # gpuType: ["nvidia-tesla-k80", "nvidia-tesla-p100", "nvidia-tesla-v100", "nvidia-tesla-p4", "nvidia-tesla-t4",
     #           "nvidia-tesla-a100", "nvidia-a100-80gb", "nvidia-l4", "nvidia-h100-80gb"]
     # TODO: Which are compatible with machine type for deepvariant_call_variants?
-    RuntimeAttributes gcp_spot_runtime_attributes = {
-      "backend": "GCP",
-      "preemptible_tries": 3,
-      "max_retries": 3,
-      "zones": select_first([zones]),
-      "gpuType": select_first([gpuType, ""]),
-      "container_registry": select_first([container_registry, default_container_registry])
+    RuntimeAttributes gcp_spot_runtime_attributes = RuntimeAttributes {
+      backend: "GCP",
+      preemptible_tries: 3,
+      max_retries: 3,
+      zones: select_first([zones]),
+      gpuType: select_first([gpuType, ""]),
+      container_registry: select_first([container_registry, default_container_registry])
     }
 
-    RuntimeAttributes gcp_on_demand_runtime_attributes = {
-      "backend": "GCP",
-      "preemptible_tries": 0,
-      "max_retries": 0,
-      "zones": select_first([zones]),
-      "gpuType": select_first([gpuType, ""]),
-      "container_registry": select_first([container_registry, default_container_registry])
+    RuntimeAttributes gcp_on_demand_runtime_attributes = RuntimeAttributes {
+      backend: "GCP",
+      preemptible_tries: 0,
+      max_retries: 0,
+      zones: select_first([zones]),
+      gpuType: select_first([gpuType, ""]),
+      container_registry: select_first([container_registry, default_container_registry])
     }
   }
 
@@ -67,22 +67,22 @@ workflow backend_configuration {
     # preemptible_tries >= 1 will be converted to `true`; 0 will be converted to `false`
     # max_retries applies to failures due to preemption or to a nonzero rc
     # GPUs are not available in Azure
-    RuntimeAttributes azure_spot_runtime_attributes = {
-      "backend": "Azure",
-      "preemptible_tries": 3,
-      "max_retries": 3,
-      "zones": "",
-      "gpuType": "",
-      "container_registry": select_first([container_registry, default_container_registry])
+    RuntimeAttributes azure_spot_runtime_attributes = RuntimeAttributes {
+      backend: "Azure",
+      preemptible_tries: 3,
+      max_retries: 3,
+      zones: "",
+      gpuType: "",
+      container_registry: select_first([container_registry, default_container_registry])
     }
 
-    RuntimeAttributes azure_on_demand_runtime_attributes = {
-      "backend": "Azure",
-      "preemptible_tries": 0,
-      "max_retries": 0,
-      "zones": "",
-      "gpuType": "",
-      "container_registry": select_first([container_registry, default_container_registry])
+    RuntimeAttributes azure_on_demand_runtime_attributes = RuntimeAttributes {
+      backend: "Azure",
+      preemptible_tries: 0,
+      max_retries: 0,
+      zones: "",
+      gpuType: "",
+      container_registry: select_first([container_registry, default_container_registry])
     }
   }
 
@@ -96,26 +96,26 @@ workflow backend_configuration {
 
     # AWS HealthOmics must use containers hosted on ECR and cannot use our Quay registry,
     # therefore, container_registry must be defined.
-    RuntimeAttributes aws_healthomics_on_demand_runtime_attributes = {
-      "backend": "AWS-HealthOmics",
-      "preemptible_tries": 0,
-      "max_retries": 0,
-      "zones": "",
-      "gpuType": select_first([gpuType, ""]),
-      "container_registry": select_first([container_registry])
+    RuntimeAttributes aws_healthomics_on_demand_runtime_attributes = RuntimeAttributes {
+      backend: "AWS-HealthOmics",
+      preemptible_tries: 0,
+      max_retries: 0,
+      zones: "",
+      gpuType: select_first([gpuType, ""]),
+      container_registry: select_first([container_registry])
     }
   }
 
   if (backend == "HPC") {
     # No distinction between preemptible and on-demand in HPC configuration
     # default_hpc_partition is provided to specify the partition to use in HPC
-    RuntimeAttributes hpc_runtime_attributes = {
-      "backend": "HPC",
-      "preemptible_tries": 0,
-      "max_retries": 3,
-      "zones": "",
-      "gpuType": select_first([gpuType, ""]),
-      "container_registry": select_first([container_registry, default_container_registry])
+    RuntimeAttributes hpc_runtime_attributes = RuntimeAttributes {
+      backend: "HPC",
+      preemptible_tries: 0,
+      max_retries: 3,
+      zones: "",
+      gpuType: select_first([gpuType, ""]),
+      container_registry: select_first([container_registry, default_container_registry])
     }
   }
 
