@@ -65,12 +65,16 @@ task bcftools_stats_roh_small_variants {
   Int disk_size = ceil(size(vcf, "GB") + size(ref_fasta, "GB") + 20)
 
   command <<<
-    set -euo pipefail
+    set -exuo pipefail
+
+    # Localize FASTA to CWD
+    CWD_FASTA=~{basename(ref_fasta)}
+    ln -s "~{ref_fasta}" "$CWD_FASTA"
 
     bcftools --version
 
     bcftools norm \
-      --fasta-ref ~{ref_fasta} \
+      --fasta-ref $CWD_FASTA \
       --multiallelics - \
       ~{vcf} 2>/dev/null \
     | bcftools view \
@@ -119,7 +123,7 @@ task bcftools_stats_roh_small_variants {
 
     # normalize VCF, filtering for PASS SNVs >= GQ20, group by REF and ALT, and plot
     bcftools norm \
-      --fasta-ref ~{ref_fasta} \
+      --fasta-ref $CWD_FASTA \
       --multiallelics - \
       ~{vcf} 2>/dev/null \
     | bcftools view \
@@ -163,7 +167,7 @@ task bcftools_stats_roh_small_variants {
 
     # normalize VCF, filter for PASS indels >= GQ20, group by length, and plot
     bcftools norm \
-      --fasta-ref ~{ref_fasta} \
+      --fasta-ref $CWD_FASTA \
       --multiallelics - \
       ~{vcf} 2>/dev/null \
     | bcftools view \
