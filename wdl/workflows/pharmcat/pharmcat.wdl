@@ -192,11 +192,15 @@ task pharmcat_preprocess {
   command <<<
     set -euo pipefail
 
+    # Localize VCF to CWD
+    CWD_VCF=~{basename(pharmcat_positions)}
+    ln -s "~{pharmcat_positions}" "CWD_VCF"
+
     /pharmcat/pharmcat_vcf_preprocessor.py \
       --missing-to-ref \
       -vcf ~{vcf} \
       -refFna ~{ref_fasta} \
-      -refVcf ~{pharmcat_positions} \
+      -refVcf $CWD_VCF \
       -o .
   >>>
 
@@ -385,9 +389,13 @@ task run_pharmcat {
 
     sort -k1,1 < ~{sep=" " input_tsvs} > merged.tsv || touch merged.tsv
 
+    # Localize VCF to CWD
+    CWD_VCF=~{basename(preprocessed_filtered_vcf)}
+    ln -s "~{preprocessed_filtered_vcf}" "CWD_VCF"
+
     # Run pharmcat
     /pharmcat/pharmcat \
-      -vcf ~{preprocessed_filtered_vcf} \
+      -vcf $CWD_VCF \
       -reporterJson \
       "$([ -s merged.tsv ] && echo '-po merged.tsv')" \
       -o .
