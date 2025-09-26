@@ -194,7 +194,7 @@ task pharmcat_preprocess {
 
     # Localize VCF to CWD
     CWD_VCF=~{basename(pharmcat_positions)}
-    ln -s "~{pharmcat_positions}" "CWD_VCF"
+    ln -s "~{pharmcat_positions}" "$CWD_VCF"
 
     /pharmcat/pharmcat_vcf_preprocessor.py \
       --missing-to-ref \
@@ -391,7 +391,7 @@ task run_pharmcat {
 
     # Localize VCF to CWD
     CWD_VCF=~{basename(preprocessed_filtered_vcf)}
-    ln -s "~{preprocessed_filtered_vcf}" "CWD_VCF"
+    ln -s "~{preprocessed_filtered_vcf}" "$CWD_VCF"
 
     # Run pharmcat
     /pharmcat/pharmcat \
